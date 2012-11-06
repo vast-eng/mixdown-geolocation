@@ -16,7 +16,17 @@ $ brew install geoip
 
 __CentOS Install__
 
-$ sudo yum install GeoIP-devel.x86_64
+```
+yum install libpcap libpcap-devel gdbm gdbm-devel
+yum install libevent libevent-devel
+wget http://geolite.maxmind.com/download/geoip/api/c/GeoIP-1.4.8.tar.gz
+tar -zxvf GeoIP-1.4.8.tar.gz
+cd GeoIP-1.4.8
+./configure
+make
+make install
+
+```
 
 
 License
@@ -42,3 +52,26 @@ __Update maxmind ip database__
 Updating /usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat
 Updated database
 ```
+
+How to set it up on your own server
+===================================
+
+Clone the repo, update your server.json.  Start the server.
+
+```
+git clone git://github.com/vast-eng/mixdown-geolocation.git
+npm install
+npm dedupe
+vim server.json
+node server
+
+```
+
+If the geoip plugin fails to link to the GeoIP.##.so files in CentOS (after build from source), then do this:
+
+```
+export LD_LIBRARY_PATH=/usr/local/lib/
+```
+
+NOTE: vast-maxmind will fail on npm install if you do not have maxmind 1.4.8 installed.
+

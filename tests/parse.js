@@ -21,46 +21,46 @@ var mocks = [
 		}
 	},
 	{
-		testname: "REMOTE_ADDR only", 
+		testname: "empty X-Forwarded-For", 
 		req: {
 			headers: {
-				"REMOTE_ADDR": gold
+				"x-forwarded-for": ''
+			},
+			client: { 
+				remoteAddress: gold 
 			}
 		}
 	},
 	{
-		testname: "REMOTE_ADDR and empty X-Forwarded-For", 
+		testname: "single X-Forwarded-For", 
 		req: {
 			headers: {
-				"REMOTE_ADDR": gold,
-				"X-Forwarded-For": ''
+				"x-forwarded-for": [gold].join(',')
+			},
+			client: { 
+				remoteAddress: toilet 
 			}
 		}
 	},
 	{
-		testname: "REMOTE_ADDR and single X-Forwarded-For", 
+		testname: "multiple X-Forwarded-For", 
 		req: {
 			headers: {
-				"REMOTE_ADDR": toilet,
-				"X-Forwarded-For": [gold].join(',')
+				"x-forwarded-for": [gold, toilet].join(',')
+			},
+			client: { 
+				remoteAddress: toilet 
 			}
 		}
 	},
 	{
-		testname: "REMOTE_ADDR and multiple X-Forwarded-For", 
+		testname: "multiple X-Forwarded-For with whitespace", 
 		req: {
 			headers: {
-				"REMOTE_ADDR": toilet,
-				"X-Forwarded-For": [gold, toilet].join(',')
-			}
-		}
-	},
-	{
-		testname: "REMOTE_ADDR and multiple X-Forwarded-For with whitespace", 
-		req: {
-			headers: {
-				"REMOTE_ADDR": toilet,
-				"X-Forwarded-For": [gold, toilet].join(',  ')
+				"x-forwarded-for": [gold, toilet].join(',  ')
+			},
+			client: { 
+				remoteAddress: toilet 
 			}
 		}
 	}
