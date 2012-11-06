@@ -22,10 +22,12 @@ $ sudo yum install GeoIP-devel.x86_64
 License
 =======
 
-__Update the configuration to use the vast license which lives in /usr/local/etc/GeoIP.conf__
+__Update the configuration to use your license __
+
+config lives in either /usr/local/etc/GeoIP.conf or /usr/local/Cellar/geoip/1.4.8/etc/GeoIP.conf depending on install.
 
 ```
-/usr/local/etc/GeoIP.conf
+/usr/local/Cellar/geoip/1.4.8/etc/GeoIP.conf
 UserId ####
 LicenseKey YOULICENSEKEY
 ProductIds 133
@@ -36,7 +38,7 @@ __Update maxmind ip database__
 
 ```
 ~$ /usr/local/bin/geoipupdate
-/usr/local/share/GeoIP/GeoIPCity.dat can't be opened, proceeding to download database
-Updating /usr/local/share/GeoIP/GeoIPCity.dat
+/usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat can't be opened, proceeding to download database
+Updating /usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat
 Updated database
 ```
