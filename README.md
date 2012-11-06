@@ -22,7 +22,7 @@ $ sudo yum install GeoIP-devel.x86_64
 License
 =======
 
-__Update the configuration to use your license __
+__Update the configuration to use your license__
 
 config lives in either /usr/local/etc/GeoIP.conf or /usr/local/Cellar/geoip/1.4.8/etc/GeoIP.conf depending on install.
 
