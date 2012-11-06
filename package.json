@@ -1,6 +1,6 @@
 {
   "name": "mixdown-geolocation",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Geolocation server / service for looking up user locations",
   "main": "index.js",
   "scripts": {
