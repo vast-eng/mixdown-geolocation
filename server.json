@@ -1,0 +1,45 @@
+{
+	"app": {
+		"plugins" :{
+			"router": {
+				"module": "/plugins/router.js",
+				"options": {}
+			},
+			"geoip": {
+				"module": "/plugins/geoip.js",
+				"options": {
+					"db": "/usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat"
+				}
+			},
+			"json": {
+				"module": "mixdown-plugins#Json"
+			}
+		}
+	},
+	"sites": [
+		{
+			"id": "geoip",
+			"hostmap": [
+				"localhost",
+				"127.0.0.1"
+			]
+		}
+	],
+	"server": {
+	    "port": 8088,
+	    "logger": {
+	    	"defaults": {
+	    		"handleExceptions": false,
+		      	"json": false,
+		      	"timestamp": true,
+		      	"colorize": true
+	    	},
+	    	"transports": [{
+	    		"transport": "Console",
+	    		"options": {
+	    			"handleExceptions": true
+	    		}
+			}]
+	    }
+	}
+}

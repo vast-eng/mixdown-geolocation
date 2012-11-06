@@ -1,0 +1,40 @@
+{
+  "name": "mixdown-geolocation",
+  "version": "0.0.0",
+  "description": "Geolocation server / service for looking up user locations",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/vast-eng/mixdown-geolocation.git"
+  },
+  "keywords": [
+    "geolocation",
+    "mixdown",
+    "maxmind",
+    "geoip",
+    "node",
+    "broadway",
+    "flatiron"
+  ],
+  "scripts": {
+    "test": "node tests/unit.js",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "vast-maxmind": "*",
+    "lodash": "0.9.1",
+    "mixdown-server": "*",
+    "mixdown-plugins": "*",
+    "pipeline-router": "*",
+    "optimist": "*"
+  },
+  "devDependencies": {
+    "tap": "*",
+    "broadway": "*"
+  },
+  "author": "Tommy Messbauer - Vast",
+  "license": "MIT"
+}
