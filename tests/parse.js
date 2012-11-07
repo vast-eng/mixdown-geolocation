@@ -21,6 +21,29 @@ var mocks = [
 		}
 	},
 	{
+		testname: "only x-cluster-client-ip", 
+		req: {
+			headers: {
+				"x-cluster-client-ip": gold 
+			},
+			client: { 
+				remoteAddress: toilet 
+			}
+		}
+	},
+	{
+		testname: "x-forwarded-for and x-cluster-client-ip", 
+		req: {
+			headers: {
+				"x-cluster-client-ip": gold,
+				"x-forwarded-for": toilet
+			},
+			client: { 
+				remoteAddress: toilet 
+			}
+		}
+	},
+	{
 		testname: "empty X-Forwarded-For", 
 		req: {
 			headers: {
@@ -70,8 +93,8 @@ _.each(mocks, function(mock) {
 
 	test("Parse " + mock.testname, function(t) {
 
-		var ip = app.geoip.parse(mock.req);
-		t.equal(ip, gold, "IP should match " + gold);
+		var loc = app.geoip.parse(mock.req);
+		t.equal(loc.ip, gold, "IP should match " + gold);
 		t.end();
 
 	});
