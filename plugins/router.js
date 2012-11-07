@@ -18,8 +18,9 @@ GeoIpRouter.prototype.attach = function (options) {
 
 	    router.param('ip', /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
 
-	    router.timeout = 3000;
-	    
+	    router.on('error', function(err) {
+	    	app.plugins.error.fail(err, res);
+	    });
 	    
 	    router.get('/geoip/:ip', function(req, res) {
 	    	app.plugins.geoip.lookup(req.params.ip, function(err, data) {
@@ -28,9 +29,12 @@ GeoIpRouter.prototype.attach = function (options) {
 	    });
 
 	    router.get('/geoip', function(req, res) {
-	    	var ip = app.plugins.geoip.parse(req);
+	    	var loc = app.plugins.geoip.parse(req);
 
-	    	app.plugins.geoip.lookup(ip, function(err, data) {
+	    	app.plugins.geoip.lookup(loc.ip, function(err, data) {
+	    		if (loc.debug) {
+	    			data.debug = loc;
+	    		}
 	    		app.plugins.json(data, res);
 	    	});
 	    });

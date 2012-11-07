@@ -8,11 +8,15 @@
 			"geoip": {
 				"module": "/plugins/geoip.js",
 				"options": {
-					"db": "/usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat"
+					"db": "/usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat",
+					"debug": true
 				}
 			},
 			"json": {
 				"module": "mixdown-plugins#Json"
+			},
+			"error": {
+				"module": "mixdown-plugins#Error"
 			}
 		}
 	},
