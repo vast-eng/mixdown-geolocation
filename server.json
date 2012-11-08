@@ -13,7 +13,10 @@
 				}
 			},
 			"json": {
-				"module": "mixdown-plugins#Json"
+				"module": "mixdown-plugins#Json",
+				"options": {
+					"jsonpEnabled": true
+				}
 			},
 			"error": {
 				"module": "mixdown-plugins#Error"

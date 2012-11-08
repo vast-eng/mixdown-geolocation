@@ -24,7 +24,7 @@ GeoIpRouter.prototype.attach = function (options) {
 	    
 	    router.get('/geoip/:ip', function(req, res) {
 	    	app.plugins.geoip.lookup(req.params.ip, function(err, data) {
-	    		app.plugins.json(data, res);
+	    		app.plugins.json(data, res, null, req);
 	    	});
 	    });
 
@@ -35,7 +35,7 @@ GeoIpRouter.prototype.attach = function (options) {
 	    		if (loc.debug) {
 	    			data.debug = loc;
 	    		}
-	    		app.plugins.json(data, res);
+	    		app.plugins.json(data, res, null, req);
 	    	});
 	    });
 
