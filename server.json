@@ -33,20 +33,25 @@
 		}
 	],
 	"server": {
-	    "port": 8088,
-	    "logger": {
-	    	"defaults": {
-	    		"handleExceptions": false,
-		      	"json": false,
-		      	"timestamp": true,
-		      	"colorize": true
-	    	},
-	    	"transports": [{
-	    		"transport": "Console",
-	    		"options": {
-	    			"handleExceptions": true
-	    		}
-			}]
-	    }
-	}
+        "listen": {
+            "port": 8088,
+            "type": "tcp",
+            "path": "/tmp/geoip.sock"
+        },
+        "logger": {
+            "defaults": {
+                "handleExceptions": false,
+                "json": false,
+                "timestamp": true,
+                "colorize": true,
+                "prettyPrint": true
+            },
+            "transports": [{
+                "transport": "Console",
+                "options": {
+                    "level": "info"
+                }
+            }]
+        }
+    }
 }
