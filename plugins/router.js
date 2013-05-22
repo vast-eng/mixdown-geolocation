@@ -18,9 +18,10 @@ GeoIpRouter.prototype.attach = function (options) {
 
 	    router.param('ip', /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
 
-	    router.on('error', function(err) {
-	    	app.plugins.error.fail(err, res);
-	    });
+		router.on('error', function(err, results) {
+            var res = results[0].res;
+            app.plugins.error.fail(err, res);
+        });
 	    
 	    router.get('/geoip/:ip', function(req, res) {
 	    	app.plugins.geoip.lookup(req.params.ip, function(err, data) {

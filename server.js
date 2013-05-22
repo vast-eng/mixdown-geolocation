@@ -1,63 +1,44 @@
-var _ = require('lodash'),
-	opt = require('optimist'),
-	util = require('util'),
-	packageJSON = require('./package.json'),
-	argv = opt
-		.alias('h', 'help')
-		.alias('?', 'help')
-		.describe('help', 'Display help')
-		.usage('Starts ' + packageJSON.name + ' for geolocation lookup.\n\nVersion: ' + packageJSON.version + '\nAuthor: ' + packageJSON.author)
-		.alias('v', 'version')
-		.describe('version', 'Display mixdown server version.')
-		.argv,
-	mixdown = require('mixdown-server'),
-    serverConfig = new mixdown.Config(require("./server.json"));
+var mixdown = require('mixdown-server'),
+	serverConfig = new mixdown.Config(require( './server.json')),
+	envConfig = null,
+	packageJSON = require('./package.json');
 
-if(argv.version) {
-	console.log(packageJSON.version);
-	return;
-}
+serverConfig.config.server.version = packageJSON.version;
 
-if(argv.help) {
-	opt.showHelp();
-	return;
-}
-
-if (!serverConfig.config.server.logger) {
-	console.log('There is no logger declared.  Exiting process.');
-	process.exit();
-}
-
-// Init logger: Need to move this to external place where is can be injected with 
-// alpha, beta, and prod settings
-global.logger = mixdown.Logger.create(serverConfig.config.server.logger);
-
+// wire up error event listeners before initializing config.
 serverConfig.on('error', function(err) {
 	console.info(err);
-})
+});
+
+// load env config and apply it
+try {
+	serverConfig.env( require('./server-' + process.env.MIXDOWN_ENV + '.json') );
+}
+catch (e) {}
+
+var main = mixdown.MainFactory.create({
+	packageJSON: packageJSON,
+	serverConfig: serverConfig
+});
 
 serverConfig.init();
 
-(function() {
-	// start server.  Sets up server, port, and starts the app.
-	var server = new mixdown.Server(serverConfig);
+main.start(function(err, main) {
 
-	server.start(function(err) {
-		if (err) {
-			logger.critical("Could not start server.  Stopping process.", err);
-			process.exit();
+	if (err) {
+		if (logger) {
+			logger.error('Server did not start');
 		}
 		else {
-			var hmap = [];
-			_.each(serverConfig.apps, function(app) { 
-				hmap.push({ 
-					hostmap: app.config.hostmap,
-					id: app.config.id
-				});
-			});
-			logger.info("Server started successfully on port " + serverConfig.server.port + ". " + util.inspect(hmap) );
+			console.log('Server did not start');
 		}
-	});
-})();
 
+		process.exit();
+	}
+});
 
+// http://nodejs.org/api/http.html#http_http_globalagent
+var ga = require("http").globalAgent;
+ga.maxSockets = 500;
+logger.info('globalAgent.maxSockets: ' + ga.maxSockets);
+logger.info('Mixdown Geo Location Server Version: ' + serverConfig.server.version);
