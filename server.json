@@ -1,57 +1,67 @@
 {
-	"app": {
-		"plugins" :{
-			"router": {
-				"module": "/plugins/router.js",
-				"options": {}
-			},
-			"geoip": {
-				"module": "/plugins/geoip.js",
-				"options": {
-					"db": "/usr/local/Cellar/geoip/1.4.8/share/GeoIP/GeoIPCity.dat",
-					"debug": true
-				}
-			},
-			"json": {
-				"module": "mixdown-plugins#Json",
-				"options": {
-					"jsonpEnabled": true
-				}
-			},
-			"error": {
-				"module": "mixdown-plugins#Error"
-			}
-		}
-	},
-	"sites": [
-		{
-			"id": "geoip",
-			"hostmap": [
-				"localhost",
-				"127.0.0.1"
-			]
-		}
-	],
-	"server": {
-        "listen": {
-            "port": 8088,
-            "type": "tcp",
-            "path": "/tmp/geoip.sock"
-        },
-        "logger": {
-            "defaults": {
-                "handleExceptions": false,
-                "json": false,
-                "timestamp": true,
-                "colorize": true,
-                "prettyPrint": true
-            },
-            "transports": [{
-                "transport": "Console",
-                "options": {
-                    "level": "info"
-                }
-            }]
+  "app": {
+    "plugins" :{
+      "router": {
+        "module": "/plugins/router.js",
+        "options": {}
+      },
+      "geoip": {
+        "module": "/plugins/geoip.js",
+        "options": {
+          "db": "/usr/local/share/GeoIP/GeoIPCity.dat",
+          "debug": false
         }
+      },
+      "json": {
+        "module": "mixdown-plugins#Json",
+        "options": {
+          "jsonpEnabled": true
+        }
+      },
+      "error": {
+        "module": "mixdown-plugins#Error"
+      }
     }
+  },
+  "sites": [
+    {
+      "id": "geoip",
+      "hostmap": [
+        "localhost",
+        "127.0.0.1",
+        "geoip.fe-local.vast.com",
+        "geoip.fe-alpha.vast.com",
+        "beta-geoip-node.vast.com",
+        "geoip-node.vast.com"
+      ]
+    }
+  ],
+  "server": {
+    "listen": {
+      "port": 9002,
+      "type": "tcp",
+      "path": "/tmp/geoip.sock"
+    },
+    "logger": {
+      "defaults": {
+        "handleExceptions": false,
+        "json": false,
+        "timestamp": true,
+        "colorize": false,
+        "prettyPrint": false
+      },
+      "transports": [{
+        "transport": "Syslog",
+        "options": {
+          "handleExceptions": true,
+          "facility": "local1",
+          "level": "info",
+          "host": "localhost",
+          "port": 514,
+          "app_name": "geoip",
+          "pid": null
+        }
+      }]
+    }
+  }
 }
