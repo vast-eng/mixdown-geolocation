@@ -21,7 +21,7 @@ GeoIP.prototype.attach = function(options) {
 				method = null,
 				ip = '127.0.0.1';
 
-			
+
 			if (headers['x-cluster-client-ip']) {
 				ip = headers['x-cluster-client-ip'];
 				method = { source: 'header', prop: 'x-cluster-client-ip' };
@@ -30,7 +30,7 @@ GeoIP.prototype.attach = function(options) {
 			// try X-Forwarded-For next
 			else if (headers['x-forwarded-for']) {
 				var ips = headers['x-forwarded-for'].split(',');
-				
+
 				if (ips.length > 0) {
 					ip = ips[0];
 				}
@@ -50,7 +50,7 @@ GeoIP.prototype.attach = function(options) {
 	    			headers: headers,
 	    			remoteAddress: req.client.remoteAddress,
 	    			method: method
-	    		}
+	    		};
 			}
 
 			return ret;
