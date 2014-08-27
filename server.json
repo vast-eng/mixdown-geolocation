@@ -26,6 +26,13 @@
       },
       "error": {
         "module": "mixdown-plugins#Error"
+      },
+      "metrics": {
+        "module": "vast-plugins#Metrics",
+        "options": {
+            "port": 8125,
+            "host": "sitemap.vast.com"
+        }
       }
     }
   },

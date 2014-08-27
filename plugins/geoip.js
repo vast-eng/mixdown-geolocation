@@ -46,6 +46,8 @@ GeoIP.prototype.attach = function(options) {
 
         // Looks up an IP address.
         lookup: function(ip, callback) {
+            var app = options.app;
+            var dtStart = (new Date()).valueOf();
 
             // prepare geo Location Lookup request closure (for multiple requests):
             var geoLocLookup = function(current_vmm) {
@@ -80,7 +82,14 @@ GeoIP.prototype.attach = function(options) {
             // use waterfall to iterate over Lookup functions, stop (by mimic an error) when current lookup
             // returns zip:
             async.waterfall(geoLocLookupFns, function (err, data) {
-                logger.info('Geo Location finished with' + (err === 'done' ? '' : ' all') + ' lookups with the following result:', data);
+                var lookupTiming = new Date().valueOf() - dtStart;
+
+                // log time to graphite if metrics enabled.
+                if (app.plugins.metrics) {
+                    app.plugins.metrics.timing('geolocation-lookup', lookupTiming);
+                }
+
+                logger.info('Geo Location finished with' + (err === 'done' ? '' : ' all') + ' lookups in a ' + lookupTiming + ' miliseconds with the following result:', data);
 
                 if (err === 'done') {
                     // this is actually success, we've (mis)used error object to indicate successfull geo location lookup
