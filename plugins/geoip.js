@@ -86,7 +86,7 @@ GeoIP.prototype.attach = function(options) {
 
                 // log time to graphite if metrics enabled.
                 if (app.plugins.metrics) {
-                    app.plugins.metrics.timing('geolocation-lookup', lookupTiming);
+                    app.plugins.metrics.timing('geolocation-lookup-timings-miliseconds', lookupTiming);
                 }
 
                 logger.info('Geo Location finished with' + (err === 'done' ? '' : ' all') + ' lookups in a ' + lookupTiming + ' miliseconds with the following result:', data);
