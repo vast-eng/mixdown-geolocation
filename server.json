@@ -9,6 +9,12 @@
         "module": "/plugins/geoip.js",
         "options": {
           "db": "/usr/local/share/GeoIP/GeoIPCity.dat",
+          "additional_dbs": [
+            "/usr/local/share/GeoIP/GeoIPCity_1.dat",
+            "/usr/local/share/GeoIP/GeoIPCity_2.dat",
+            "/usr/local/share/GeoIP/GeoIPCity_3.dat",
+            "/usr/local/share/GeoIP/GeoIPCity_4.dat"
+          ],
           "debug": false
         }
       },

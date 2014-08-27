@@ -32,7 +32,8 @@
     "mixdown-server": "0.3.x",
     "mixdown-plugins": "2.0.x",
     "pipeline-router": "*",
-    "optimist": "*"
+    "optimist": "*",
+    "async": "0.9.0"
   },
   "devDependencies": {
     "tap": "*",

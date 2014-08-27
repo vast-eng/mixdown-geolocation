@@ -5,7 +5,7 @@ var GeoIpRouter = function() {};
 /**
 * Attaches an autos router plugin to an application.
 *
-**/ 
+**/
 GeoIpRouter.prototype.attach = function (options) {
 	var app = options.app;
 
@@ -22,7 +22,7 @@ GeoIpRouter.prototype.attach = function (options) {
             var res = results[0].res;
             app.plugins.error.fail(err, res);
         });
-	    
+
 	    router.get('/geoip/:ip', function(req, res) {
 	    	app.plugins.geoip.lookup(req.params.ip, function(err, data) {
 	    		app.plugins.json(data, res, null, req);
