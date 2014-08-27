@@ -17,6 +17,7 @@ GeoIpRouter.prototype.attach = function (options) {
 	    var router = new Router();
 
 	    router.param('ip', /\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}/);
+	    router.param('variousParams', /(.*)/);
 
 		router.on('error', function(err, results) {
             var res = results[0].res;
@@ -29,7 +30,7 @@ GeoIpRouter.prototype.attach = function (options) {
 	    	});
 	    });
 
-	    router.get('/geoip', function(req, res) {
+	    router.get('/geoip?:variousParams', function(req, res) {
 	    	var loc = app.plugins.geoip.parse(req);
 
 	    	app.plugins.geoip.lookup(loc.ip, function(err, data) {
