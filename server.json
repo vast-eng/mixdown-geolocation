@@ -52,7 +52,6 @@
               "lookupsFailedCount": "lookups_failed_count",
               "lookupsOlderDbsCount": "lookups_older_dbs_count"
             }
-
           },
           "debug": false
         }
