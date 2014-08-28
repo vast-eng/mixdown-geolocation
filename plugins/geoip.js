@@ -1,5 +1,6 @@
 var VastMaxmind = require('vast-maxmind').VastMaxmind,
-    async = require('async');
+    cradle = require('cradle'),// CouchDB Library is needed to generate some stats around GeoLocation lookups
+    async = require('async');// async was added just for the async.waterfall, if we choose to use callbacks only for the same thing - it can be removed
 
 var GeoIP = function() {};
 
