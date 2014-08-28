@@ -1,0 +1,50 @@
+{
+  "app": {
+    "plugins" :{
+      "geoip": {
+        "module": "/plugins/geoip.js",
+        "options": {
+          "couchDBCradle": {
+            "dbUrl": "couchdbprod.vast.com",
+            "dbPort": 5984,
+            "extraConf": { "auth": {"username": "mixdown", "password": "r4sYSlaDee74H4C"}},
+            "dbName": "geolocation_logs",
+            "lookupsTotalCount": "lookups_total_count",
+            "lookupsFailedCount": "lookups_failed_count",
+            "lookupsOlderDbsCount": "lookups_older_dbs_count",
+            "lookupsFailedIPNumbers": "lookups_failed_ip_numbers"
+          },
+          "debug": false
+        }
+      }
+    }
+  },
+  "server": {
+    "listen": {
+      "port": 9002,
+      "type": "tcp",
+      "path": "/tmp/geoip.sock"
+    },
+    "logger": {
+      "defaults": {
+        "handleExceptions": false,
+        "json": false,
+        "timestamp": true,
+        "colorize": false,
+        "prettyPrint": false
+      },
+      "transports": [{
+        "transport": "Syslog",
+        "options": {
+          "handleExceptions": true,
+          "facility": "local1",
+          "level": "info",
+          "host": "localhost",
+          "port": 514,
+          "app_name": "geoip",
+          "pid": null
+        }
+      }]
+    }
+  }
+}
