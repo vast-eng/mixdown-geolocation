@@ -16,42 +16,14 @@
             "/usr/local/share/GeoIP/GeoIPCity_4.dat"
           ],
           "couchDBCradle": {
-            "local": {
-              "dbUrl": "couchdb-alpha.vast.com",
-              "dbPort": 5984,
-              "extraConf": {},
-              "dbName": "geolocation_logs",
-              "lookupsTotalCount": "lookups_total_count",
-              "lookupsFailedCount": "lookups_failed_count",
-              "lookupsOlderDbsCount": "lookups_older_dbs_count"
-            },
-            "alpha": {
-              "dbUrl": "couchdb-alpha.vast.com",
-              "dbPort": 5984,
-              "extraConf": {},
-              "dbName": "geolocation_logs",
-              "lookupsTotalCount": "lookups_total_count",
-              "lookupsFailedCount": "lookups_failed_count",
-              "lookupsOlderDbsCount": "lookups_older_dbs_count"
-            },
-            "beta": {
-              "dbUrl": "couchdbbeta.vast.com",
-              "dbPort": 5984,
-              "extraConf": { "auth": {"username": "mixdown", "password": "r4sYSlaDee74H4C"}},
-              "dbName": "geolocation_logs",
-              "lookupsTotalCount": "lookups_total_count",
-              "lookupsFailedCount": "lookups_failed_count",
-              "lookupsOlderDbsCount": "lookups_older_dbs_count"
-            },
-            "prod": {
-              "dbUrl": "couchdbprod.vast.com",
-              "dbPort": 5984,
-              "extraConf": { "auth": {"username": "mixdown", "password": "r4sYSlaDee74H4C"}},
-              "dbName": "geolocation_logs",
-              "lookupsTotalCount": "lookups_total_count",
-              "lookupsFailedCount": "lookups_failed_count",
-              "lookupsOlderDbsCount": "lookups_older_dbs_count"
-            }
+            "dbUrl": "couchdb-alpha.vast.com",
+            "dbPort": 5984,
+            "extraConf": {},
+            "dbName": "geolocation_logs",
+            "lookupsTotalCount": "lookups_total_count",
+            "lookupsFailedCount": "lookups_failed_count",
+            "lookupsOlderDbsCount": "lookups_older_dbs_count",
+            "lookupsFailedIPNumbers": "lookups_failed_ip_numbers"
           },
           "debug": false
         }
@@ -95,23 +67,14 @@
     },
     "logger": {
       "defaults": {
-        "handleExceptions": false,
-        "json": false,
-        "timestamp": true,
-        "colorize": false,
-        "prettyPrint": false
+          "handleExceptions": false,
+          "json": false,
+          "timestamp": true,
+          "colorize": true,
+          "prettyPrint": true
       },
       "transports": [{
-        "transport": "Syslog",
-        "options": {
-          "handleExceptions": true,
-          "facility": "local1",
-          "level": "info",
-          "host": "localhost",
-          "port": 514,
-          "app_name": "geoip",
-          "pid": null
-        }
+          "transport": "Console"
       }]
     }
   }
