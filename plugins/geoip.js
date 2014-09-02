@@ -8,6 +8,20 @@ GeoIP.prototype.attach = function(options) {
     var vmmDefaultDataFile = options.db || '/usr/local/share/GeoIP/GeoIPCity.dat';
     var vmm = new VastMaxmind(vmmDefaultDataFile);
 
+    // instantiate CouchDB client if enabled in config:
+    var couchDB = null;
+    if (options.couchDBCradle.enabled) {
+        couchDB = new(cradle.Connection)(options.host, options.port, options.extraConf).database(options.databaseName);
+
+        // check if DB exists, if not - assume as if there is no couchDB enabled in config:
+        couchDB.exists(function (err, exists) {
+            if (err || !exists) {
+                couchDB = null;
+            }
+        });
+    }
+
+
     if (options.additional_dbs && options.additional_dbs.length) {
         logger.info('Taking additional MaxMind databases into account:', options.additional_dbs);
 
