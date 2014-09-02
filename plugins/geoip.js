@@ -71,10 +71,20 @@ GeoIP.prototype.attach = function(options) {
                         var currentMaxMindDBFile = current_vmm ? options.additional_dbs[current_vmm - 1] : vmmDefaultDataFile;
                         logger.info('Trying to fetch geo location data from the following MaxMind db:', currentMaxMindDBFile);
 
+                        // increase graphite count for lookups_older_dbs_count if metrics enabled.
+                        if (current_vmm === 1 && options.logToGraphite && app.plugins.metrics) {
+                            app.plugins.metrics.increment('geolocation-lookups_older_dbs_count');
+                        }
+
                         // if this is tha last attempt to get Geo Location - return what we have regardless of whether there's
                         // zip code retrieved:
                         var lastAttempt = vmm[current_vmm] === vmm[vmm.length - 1];
                         var zipCodeDefined = data.zip && data.zip.toLowerCase() !== 'n/a';
+
+                        // increase graphite count for lookups_failed_count if metrics enabled.
+                        if (lastAttempt && !zipCodeDefined && options.logToGraphite && app.plugins.metrics) {
+                            app.plugins.metrics.increment('geolocation-lookups_failed_count');
+                        }
 
                         if (lastAttempt || zipCodeDefined) {
                             callback('done', data);
@@ -85,6 +95,11 @@ GeoIP.prototype.attach = function(options) {
                     });
                 };
             };
+
+            // increase graphite count for lookups_total_count if metrics enabled.
+            if (options.logToGraphite && app.plugins.metrics) {
+                app.plugins.metrics.increment('geolocation-lookups_total_count');
+            }
 
             // generate array of Lookup functions and populate it:
             var geoLocLookupFns = [];
@@ -100,7 +115,7 @@ GeoIP.prototype.attach = function(options) {
                 var lookupTiming = new Date().valueOf() - dtStart;
 
                 // log time to graphite if metrics enabled.
-                if (app.plugins.metrics) {
+                if (options.logToGraphite && app.plugins.metrics) {
                     app.plugins.metrics.timing('geolocation-lookup-timings-miliseconds', lookupTiming);
                 }
 

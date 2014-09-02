@@ -26,6 +26,7 @@
             "lookupsOlderDbsCount": "lookups_older_dbs_count",
             "lookupsFailedIPNumbers": "lookups_failed_ip_numbers"
           },
+          "logToGraphite": true,
           "debug": false
         }
       },
