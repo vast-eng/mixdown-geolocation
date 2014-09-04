@@ -7,12 +7,7 @@
           "couchDBCradle": {
             "dbUrl": "couchdb-alpha.vast.com",
             "dbPort": 5984,
-            "extraConf": {},
-            "dbName": "geolocation_logs",
-            "lookupsTotalCount": "lookups_total_count",
-            "lookupsFailedCount": "lookups_failed_count",
-            "lookupsOlderDbsCount": "lookups_older_dbs_count",
-            "lookupsFailedIPNumbers": "lookups_failed_ip_numbers"
+            "extraConf": {}
           },
           "debug": false
         }

@@ -11,7 +11,7 @@ GeoIP.prototype.attach = function(options) {
     // instantiate CouchDB client if enabled in config:
     var couchDB = null;
     if (options.couchDBCradle.enabled) {
-        couchDB = new(cradle.Connection)(options.host, options.port, options.extraConf).database(options.databaseName);
+        couchDB = new(cradle.Connection)(options.host, options.port, options.extraConf).database(options.dbName);
 
         // check if DB exists, if not - assume as if there is no couchDB enabled in config:
         couchDB.exists(function (err, exists) {
@@ -63,6 +63,7 @@ GeoIP.prototype.attach = function(options) {
         lookup: function(ip, callback) {
             var app = options.app;
             var dtStart = (new Date()).valueOf();
+            var additionalLookups = false;
 
             // prepare geo Location Lookup request closure (for multiple requests):
             var geoLocLookup = function(current_vmm) {
@@ -74,12 +75,13 @@ GeoIP.prototype.attach = function(options) {
                         // increase graphite count for lookups_older_dbs_count if metrics enabled.
                         if (current_vmm === 1 && options.logToGraphite && app.plugins.metrics) {
                             app.plugins.metrics.increment('geolocation-lookups_older_dbs_count');
+                            additionalLookups = true;
                         }
 
                         // if this is tha last attempt to get Geo Location - return what we have regardless of whether there's
                         // zip code retrieved:
                         var lastAttempt = vmm[current_vmm] === vmm[vmm.length - 1];
-                        var zipCodeDefined = data.zip && data.zip.toLowerCase() !== 'n/a';
+                        var zipCodeDefined = data.zip && data.zip.match(/\d{5}/);
 
                         // increase graphite count for lookups_failed_count if metrics enabled.
                         if (lastAttempt && !zipCodeDefined && options.logToGraphite && app.plugins.metrics) {
@@ -112,6 +114,12 @@ GeoIP.prototype.attach = function(options) {
             // use waterfall to iterate over Lookup functions, stop (by mimic an error) when current lookup
             // returns zip:
             async.waterfall(geoLocLookupFns, function (err, data) {
+                if (err === 'done') {
+                    // this is actually success, we've (mis)used error object to indicate successfull geo location lookup
+                    // before the other MaxMind DBs were contacted (cause err object would stop waterfall)
+                    // ... remains here as code comment in case there is a need to log this particular case...
+                }
+
                 var lookupTiming = new Date().valueOf() - dtStart;
 
                 // log time to graphite if metrics enabled.
@@ -121,11 +129,32 @@ GeoIP.prototype.attach = function(options) {
 
                 logger.info('Geo Location finished with' + (err === 'done' ? '' : ' all') + ' lookups in a ' + lookupTiming + ' miliseconds with the following result:', data);
 
-                if (err === 'done') {
-                    // this is actually success, we've (mis)used error object to indicate successfull geo location lookup
-                    // before the other MaxMind DBs were contacted (cause err object would stop waterfall)
-                    // ... remains here as code comment in case there is a need to log this particular case...
+
+
+                // store lookup results to permanent storage (first prepare arguments for update handler call):
+                var updateHandlerParameters = {};
+                var zipCodeDefined = data.zip && data.zip.match(/\d{5}/);
+
+                if (zipCodeDefined) {
+                    updateHandlerParameters.zip = zipCodeDefined;
                 }
+                else {
+                    updateHandlerParameters.ip = ip;
+                }
+
+                if (additionalLookups) {
+                    updateHandlerParameters['additional_lookups'] = 'true';
+                }
+
+                db.update('_design/update/_update/count/', options.docName, updateHandlerParameters, function(err, doc){
+                    if (err) {
+                        logger.error('Failed to update lookup counts due to following error:', err);
+                    }
+                    else {
+                        logger.info('CouchDB response for GeoLocation updated lookups count:', doc);
+                    }
+                });
+
 
                 callback(null, data);
             });
