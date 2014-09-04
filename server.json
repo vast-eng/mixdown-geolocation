@@ -53,7 +53,9 @@
         "127.0.0.1",
         "geoip.fe-local.vast.com",
         "geoip.fe-alpha.vast.com",
+        "geoip.fe-beta.vast.com",
         "beta-geoip-node.vast.com",
+        "geoip.fe-prod.vast.com",
         "geoip-node.vast.com"
       ]
     }
