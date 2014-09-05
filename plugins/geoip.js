@@ -10,8 +10,8 @@ GeoIP.prototype.attach = function(options) {
 
     // instantiate CouchDB client if enabled in config:
     var couchDB = null;
-    if (options.couchDBCradle.enabled) {
-        couchDB = new(cradle.Connection)(options.host, options.port, options.extraConf).database(options.dbName);
+    if (options.couchDBCradle.enabled && options.couchDBCradle.dbName && options.couchDBCradle.docName) {
+        couchDB = new(cradle.Connection)(options.couchDBCradle.dbUrl, options.couchDBCradle.dbPort, options.couchDBCradle.extraConf).database(options.couchDBCradle.dbName);
 
         // check if DB exists, if not - assume as if there is no couchDB enabled in config:
         couchDB.exists(function (err, exists) {
@@ -19,6 +19,9 @@ GeoIP.prototype.attach = function(options) {
                 couchDB = null;
             }
         });
+    }
+    else {
+        logger.info('Logging counts to CouchDB has been disabled or missing configuration parameters.');
     }
 
 
@@ -81,7 +84,7 @@ GeoIP.prototype.attach = function(options) {
                         // if this is tha last attempt to get Geo Location - return what we have regardless of whether there's
                         // zip code retrieved:
                         var lastAttempt = vmm[current_vmm] === vmm[vmm.length - 1];
-                        var zipCodeDefined = data.zip && data.zip.match(/\d{5}/);
+                        var zipCodeDefined = typeof data.zip !== 'undefined' && data.zip.match(/\d{5}/);
 
                         // increase graphite count for lookups_failed_count if metrics enabled.
                         if (lastAttempt && !zipCodeDefined && options.logToGraphite && app.plugins.metrics) {
@@ -130,30 +133,28 @@ GeoIP.prototype.attach = function(options) {
                 logger.info('Geo Location finished with' + (err === 'done' ? '' : ' all') + ' lookups in a ' + lookupTiming + ' miliseconds with the following result:', data);
 
 
-
                 // store lookup results to permanent storage (first prepare arguments for update handler call):
-                var updateHandlerParameters = {};
-                var zipCodeDefined = data.zip && data.zip.match(/\d{5}/);
+                var updateHandlerParameters = {ip: ip};
+                var zipCodeDefined = typeof data.zip !== 'undefined' && data.zip.match(/\d{5}/);
 
                 if (zipCodeDefined) {
-                    updateHandlerParameters.zip = zipCodeDefined;
-                }
-                else {
-                    updateHandlerParameters.ip = ip;
+                    updateHandlerParameters.zip = data.zip;
                 }
 
                 if (additionalLookups) {
-                    updateHandlerParameters['additional_lookups'] = 'true';
+                    updateHandlerParameters.additional_lookups = 'true';
                 }
 
-                db.update('_design/update/_update/count/', options.docName, updateHandlerParameters, function(err, doc){
-                    if (err) {
-                        logger.error('Failed to update lookup counts due to following error:', err);
-                    }
-                    else {
-                        logger.info('CouchDB response for GeoLocation updated lookups count:', doc);
-                    }
-                });
+                if (couchDB) {
+                    couchDB.update('update/increment', options.couchDBCradle.docName, updateHandlerParameters, function(err, res){
+                        if (err) {
+                            logger.error('Failed to update lookup counts due to following error:', err);
+                        }
+                        else {
+                            logger.info('CouchDB response for GeoLocation updated lookups count:', res);
+                        }
+                    });
+                }
 
 
                 callback(null, data);
