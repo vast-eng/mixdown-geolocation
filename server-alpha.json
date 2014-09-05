@@ -16,7 +16,7 @@
   },
   "server": {
     "listen": {
-      "port": 8002,
+      "port": 9002,
       "type": "tcp",
       "path": "/tmp/geoip.sock"
     },
