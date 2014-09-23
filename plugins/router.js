@@ -46,6 +46,12 @@ GeoIpRouter.prototype.attach = function (options) {
 			        couchDB.exists(function (err, exists) {
 			            if (err || !exists) {
 			                couchDB = null;
+			                if (!exist) {
+				                logger.error('CouchDB - database does not exist');
+			                }
+			                if (!exist) {
+				                logger.error('Failed to check CouchDB existence:', err);
+			                }
 			            }
 			        });
 			    }
