@@ -149,21 +149,24 @@ GeoIP.prototype.attach = function(options) {
                     // try more than once to update CouchDB in case there was concurrent request which caused this one to be outdated
                     // (number of retries usually defines how much concurrent updates are supported since CouchDB update handlers
                     // may update only one document at a time):
-                    var success = false;
-                    var tries = 0;
                     var retriesOnFailure = options.couchDBCradle.retriesOnFailure ? options.couchDBCradle.retriesOnFailure : 1;
 
-                    while (!success && retriesOnFailure--) {
-                        couchDB.update('update/increment', options.couchDBCradle.docName, updateHandlerParameters, function(err, res){
-                            if (err) {
-                                logger.error('Failed (' + (++tries) + '. try) to update lookup counts due to following error:', err);
-                            }
-                            else {
-                                success = true;
-                                logger.info('CouchDB response (after ' + (++tries) + '. try)for GeoLocation updated lookups count:', res);
-                            }
-                        });
-                    }
+                    var updateFunc = function(tryNum) {
+                            couchDB.update('update/increment', options.couchDBCradle.docName, updateHandlerParameters, function(err, res){
+                                if (err) {
+                                    logger.error('Failed (' + (tryNum) + '. ' + (tryNum === retriesOnFailure ? '- the last - ': '') + 'try) to update lookup counts due to following error:', err);
+
+                                    // retry:
+                                    if (tryNum < retriesOnFailure) {
+                                        updateFunc(++tryNum);
+                                    }
+                                }
+                                else {
+                                    logger.info('CouchDB response (after ' + (tryNum) + '. try) for GeoLocation updated lookups count:', res);
+                                }
+                            });
+                    };
+                    updateFunc(1);
                 }
 
 
