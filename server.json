@@ -21,7 +21,8 @@
             "dbPort": 5984,
             "extraConf": {},
             "dbName": "geolocation_logs",
-            "docName": "lookups"
+            "docName": "lookups",
+            "retriesOnFailure": 5
           },
           "logToGraphite": true,
           "debug": false
