@@ -156,10 +156,11 @@ GeoIP.prototype.attach = function(options) {
                     while (!success && retriesOnFailure--) {
                         couchDB.update('update/increment', options.couchDBCradle.docName, updateHandlerParameters, function(err, res){
                             if (err) {
-                                logger.error('Failed (' + (++success) + '. try) to update lookup counts due to following error:', err);
+                                logger.error('Failed (' + (++tries) + '. try) to update lookup counts due to following error:', err);
                             }
                             else {
-                                logger.info('CouchDB response (after ' + (++success) + '. try)for GeoLocation updated lookups count:', res);
+                                success = true;
+                                logger.info('CouchDB response (after ' + (++tries) + '. try)for GeoLocation updated lookups count:', res);
                             }
                         });
                     }
